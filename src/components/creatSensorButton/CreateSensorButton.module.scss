@@ -1,0 +1,93 @@
+
+.cell {
+    width: var(--dashboard-cell-size);
+    height: var(--dashboard-cell-size);
+
+    background-color: var(--dashboard-cell-background);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    border-radius: var(--dashboard-cell-border-radius);
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell:hover {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.createModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .modal {
+        width: 300px;
+        height: 300px;
+        
+        background-color: var(--dashboard-create-modal-background);
+        box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+        border-radius: var(--dashboard-create-modal-border-radius);
+
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 5px;
+        padding: 1rem;
+
+        .close {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+
+            width: 15px;
+            height: 15px;
+
+            background-color: inherit;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            background-color: var(--dashboard-create-modal-close-background-hover);
+        }
+
+        .head {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .form {
+
+        }
+
+        .action {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 10px;
+
+            .button {
+                padding: 0.5rem;
+                cursor: pointer;
+                border-radius: var(--dashboard-create-modal-action-border-radius);
+                box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+            }
+
+            .button:hover {
+                box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            }
+        }
+    }
+}

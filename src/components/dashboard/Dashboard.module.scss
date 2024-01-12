@@ -1,0 +1,70 @@
+
+.dashboard {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .cell {
+        width: var(--dashboard-cell-size);
+        height: var(--dashboard-cell-size);
+    
+        background-color: var(--dashboard-cell-background);
+        box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+        border-radius: var(--dashboard-cell-border-radius);
+        cursor: pointer;
+    
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    
+        .remove {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+
+            width: 15px;
+            height: 15px;
+
+            background-color: inherit;
+        }
+
+        .remove:hover {
+            background-color: var(--dashboard-cell-remove-background-hover);
+        }
+
+        .name {
+            font-size: small;
+        }
+
+        .valueField {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+    
+            .value {
+                font-size: 2rem;
+                font-weight: bolder;
+            }
+    
+            .unit {
+                font-size: 2rem;
+                font-weight: bolder;
+                color: var(--foreground-secondary);
+            }
+        }
+    }
+
+    .cell:hover {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }
+}
