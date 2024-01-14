@@ -1,10 +1,18 @@
 
 import { useState } from 'react'
+import { Entry } from '../dashboard/Dashboard'
 import styles from './CreateSensorButton.module.scss'
 
-export function CreateSensorButton() {
+export function CreateSensorButton({
+    addNewSensor
+} : {
+    addNewSensor: (newEntry: Entry) => void
+}) {
 
     const [modal, setModal] = useState<boolean>(false)
+    const [name, setName] = useState<string>('')
+    const [type, setType] = useState<string|null>(null)
+    const [unit, setUnit] = useState<string>('')
 
     return (
         <>
@@ -25,7 +33,10 @@ export function CreateSensorButton() {
                         setModal(false)
                     }}
                 >
-                    <div className={styles.modal}>
+                    <div
+                        className={styles.modal}
+                        onClick={(e) => {e.stopPropagation()}}
+                    >
                         <div
                             className={styles.close}
                             onClick={(e) => {
@@ -41,7 +52,39 @@ export function CreateSensorButton() {
                             New Sensor
                         </div>
                         <div className={styles.form}>
-                            Todo: add input fields
+                            <label>
+                                Sensor Name :
+                                <input
+                                    className={styles.textInput}
+                                    value={name}
+                                    onChange={(e) => {setName(e.target.value)}}
+                                />
+                            </label>
+                            <label>
+                                Value Type :
+                                <input
+                                    type="radio"
+                                    value="number"
+                                    checked={type == "number"}
+                                    onChange={(e) => {setType(e.target.value)}}
+                                />
+                                number
+                                <input
+                                    type="radio"
+                                    value="string"
+                                    checked={type == "string"}
+                                    onChange={(e) => {setType(e.target.value)}}
+                                />
+                                string
+                            </label>
+                            <label>
+                                Value Unit :
+                                <input
+                                    className={styles.textInput}
+                                    value={unit}
+                                    onChange={(e) => {setUnit(e.target.value)}}
+                                />
+                            </label>
                         </div>
                         <div className={styles.action}>
                             <div
@@ -58,8 +101,26 @@ export function CreateSensorButton() {
                                 onClick={(e) => {
                                     e.stopPropagation()
 
-                                    // TODO: add new sensor to sensor table
+                                    if (name == '') {
+                                        window.alert('Name cannot be empty!')
+                                        return
+                                    }
 
+                                    // TODO: add new sensor to sensor table
+                                    // TODO: once device is added, retrieve unique device ID
+                                    console.log(name, type, unit)
+
+                                    addNewSensor({
+                                        deviceId: makeid(10),
+                                        entryNum: 0,
+                                        name,
+                                        value: type == "number" ? 0 : "x",
+                                        unit,
+                                    })
+
+                                    setName('')
+                                    setType(null)
+                                    setUnit('')
                                     setModal(false)
                                 }}
                             >
@@ -71,4 +132,17 @@ export function CreateSensorButton() {
             }
         </>
     )
+}
+
+// TODO: example for now
+function makeid(length: number) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
 }

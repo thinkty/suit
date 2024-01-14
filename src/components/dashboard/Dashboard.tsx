@@ -8,8 +8,8 @@ export type Entry = {
     deviceId: string
     entryNum: number
     name: string
-    value: string | number
-    unit?: string
+    value: string | number | null
+    unit: string
 }
 
 export function Dashboard() {
@@ -19,22 +19,29 @@ export function Dashboard() {
     // TODO: fetch the latest sensor entries from the database
     useEffect(() => {
         setEntries([{
-            deviceId: '1',
+            deviceId: 'yBN5qHIvD4',
             entryNum: 1,
             name: 'Temperature',
             value: 18,
             unit: '°C',
         }, {
-            deviceId: '2',
+            deviceId: '4H07eBrKEy',
             entryNum: 1,
             name: 'Humidity',
             value: 35,
             unit: '%',
         }, {
-            deviceId: '3',
+            deviceId: 'T2SRXSm7d3',
             entryNum: 1,
             name: 'Light',
             value: 'On',
+            unit: '',
+        }, {
+            deviceId: 'G46PXDF2nd',
+            entryNum: 0,
+            name: 'Empty',
+            value: null,
+            unit: '%'
         }])
     }, [])
 
@@ -43,7 +50,11 @@ export function Dashboard() {
             {
                 entries.map((data, i) => <DashboardCell key={data.deviceId} data={data} remove={() => {setEntries(entries.filter((_, index) => (index != i)))}} />)
             }
-            <CreateSensorButton />
+            <CreateSensorButton
+                addNewSensor={(newEntry: Entry) => {
+                    setEntries([...entries, newEntry])
+                }}
+            />
         </div>
     )
 }
@@ -80,10 +91,15 @@ function DashboardCell({
             </div>
             <div className={styles.valueField}>
                 <div className={styles.value}>
-                    {data.value}
+                    {
+                        data.value == null ?
+                        "-"
+                        :
+                        data.value
+                    }
                 </div>
                 {
-                    data.unit && 
+                    data.unit != '' && 
                     <div className={styles.unit}>
                         {data.unit}
                     </div>
