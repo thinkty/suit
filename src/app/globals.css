@@ -17,6 +17,22 @@
   --dashboard-create-modal-border-radius: 5px;
   --dashboard-create-modal-close-background-hover: #dedede;
   --dashboard-create-modal-action-border-radius: 10px;
+
+  --backbutton-size: 45px;
+  --backbutton-padding: 8px;
+  --backbutton-background: #ffffff;
+  --backbutton-border-color: #c3c3c3;
+  --backbutton-border-radius: 50px;
+
+  --loader-border-color: #c3c3c3;
+
+  --graph-width: 90vw;
+  --graph-max-width: 1000px;
+  --graph-height: 50vh;
+  --graph-background: #ffffff;
+  --graph-border-color: #c3c3c3;
+  --graph-border-radius: 5px;
+
 }
 
 * {
