@@ -1,0 +1,15 @@
+
+.graph {
+    width: var(--graph-width);
+    max-width: var(--graph-max-width);
+    height: var(--graph-height);
+    background-color: var(--graph-background);
+    border: thin solid var(--graph-border-color);
+    border-radius: var(--graph-border-radius);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

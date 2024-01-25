@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CreateSensorButton } from '../creatSensorButton/CreateSensorButton'
+import { CreateSensorButton } from '../createSensorButton/CreateSensorButton'
 import styles from './Dashboard.module.scss'
+import Link from 'next/link'
 
 export type Entry = {
     deviceId: string
@@ -66,11 +67,14 @@ function DashboardCell({
     data: Entry,
     remove: () => void,
 }) {
-
-    // TODO: Make this a NextJS Link component so that it leads to the individual sensor page when clicked
-
     return (
-        <div className={styles.cell}>
+        <Link
+            className={styles.cell}
+            href={{
+                pathname: 'sensor',
+                query: { deviceId: data.deviceId }
+            }}
+        >
             <div
                 className={styles.remove}
                 onClick={(e) => {
@@ -105,6 +109,6 @@ function DashboardCell({
                     </div>
                 }
             </div>
-        </div>
+        </Link>
     )
 }
