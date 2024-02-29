@@ -12,8 +12,8 @@ dbConfig.port = parseInt(dbConfig.port);
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, { 
     host: dbConfig.host,
     port: dbConfig.port,
-    dialect: 'mysql',
-    dialectModule: require('mysql2') 
+    dialect: 'mariadb',
+    dialectModule: require('mariadb'), 
 });
 
 export const Device = sequelize.define('Device', {
