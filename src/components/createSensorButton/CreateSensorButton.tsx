@@ -1,8 +1,9 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Entry } from '../dashboard/Dashboard'
-import styles from './CreateSensorButton.module.scss'
+import { useState } from 'react';
+import { Entry } from '../dashboard/Dashboard';
+import styles from './CreateSensorButton.module.scss';
+import { usePathname } from 'next/navigation';
 
 export function CreateSensorButton({
     addNewSensor
@@ -10,10 +11,12 @@ export function CreateSensorButton({
     addNewSensor: (newEntry: Entry) => void
 }) {
 
-    const [modal, setModal] = useState<boolean>(false)
-    const [name, setName] = useState<string>('')
-    const [type, setType] = useState<string|null>(null)
-    const [unit, setUnit] = useState<string>('')
+    const pathname = usePathname();
+
+    const [modal, setModal] = useState<boolean>(false);
+    const [name, setName] = useState<string>('');
+    const [valueType, setValueType] = useState<'number'|'string'>('number');
+    const [unit, setUnit] = useState<string>('');
 
     return (
         <>
@@ -66,15 +69,15 @@ export function CreateSensorButton({
                                 <input
                                     type="radio"
                                     value="number"
-                                    checked={type == "number"}
-                                    onChange={(e) => {setType(e.target.value)}}
+                                    checked={valueType == "number"}
+                                    onChange={(e) => {setValueType("number")}}
                                 />
                                 number
                                 <input
                                     type="radio"
                                     value="string"
-                                    checked={type == "string"}
-                                    onChange={(e) => {setType(e.target.value)}}
+                                    checked={valueType == "string"}
+                                    onChange={(e) => {setValueType("string")}}
                                 />
                                 string
                             </label>
@@ -107,22 +110,33 @@ export function CreateSensorButton({
                                         return
                                     }
 
-                                    // TODO: add new sensor to sensor table
-                                    // TODO: once device is added, retrieve unique device ID
-                                    console.log(name, type, unit)
-
-                                    addNewSensor({
-                                        deviceId: makeid(10),
-                                        entryNum: 0,
-                                        name,
-                                        value: type == "number" ? 0 : "x",
-                                        unit,
+                                    fetch(pathname + 'api', {
+                                        method: 'POST',
+                                        headers: { 'Content-type': 'application/json' },
+                                        body: JSON.stringify({ name, valueType, unit })
                                     })
+                                        .then((response) => response.json())
+                                        .then((data) => {
+                                            console.log(data);
+                                            
+                                            // TODO:
+                                            addNewSensor({
+                                                deviceId: data.id,
+                                                entryNum: 0, // TODO:
+                                                name: data.name,
+                                                value: 0, // TODO:
+                                                unit: data.unit,
+                                            })
 
-                                    setName('')
-                                    setType(null)
-                                    setUnit('')
-                                    setModal(false)
+                                            setName('')
+                                            setValueType('number')
+                                            setUnit('')
+                                            setModal(false)
+                                        })
+                                        .catch((error) => {
+                                            alert('Could not add new device');
+                                            console.error(error);
+                                        });
                                 }}
                             >
                                 Confirm
@@ -133,17 +147,4 @@ export function CreateSensorButton({
             }
         </>
     )
-}
-
-// TODO: example for now
-function makeid(length: number) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
 }
