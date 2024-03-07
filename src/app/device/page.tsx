@@ -1,13 +1,13 @@
-'use client'
+'use client';
 
-import { useSearchParams } from 'next/navigation'
-import { BackButton } from '@/components/backButton/BackButton'
-import { Graph } from '@/components/graph/Graph'
-import styles from './page.module.scss'
+import { useSearchParams } from 'next/navigation';
+import { BackButton } from '@/components/backButton/BackButton';
+import { Graph } from '@/components/graph/Graph';
+import styles from './page.module.scss';
 
-export default function Sensor() {
-    const searchParams = useSearchParams()
-    const deviceId = searchParams.get('deviceId')
+export default function DevicePage() {
+    const searchParams = useSearchParams();
+    const deviceId = searchParams.get('deviceId');
 
     if (!deviceId) {
         return (
@@ -21,7 +21,7 @@ export default function Sensor() {
 
                 <BackButton />
             </div>
-        )
+        );
     }
 
     return (
@@ -35,5 +35,5 @@ export default function Sensor() {
 
             <BackButton />
         </div>
-    )
+    );
 }

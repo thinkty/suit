@@ -1,59 +1,64 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { CreateSensorButton } from '../createSensorButton/CreateSensorButton'
-import styles from './Dashboard.module.scss'
-import Link from 'next/link'
-
-export type Entry = {
-    deviceId: string
-    entryNum: number
-    name: string
-    value: string | number | null
-    unit: string
-}
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { Device } from '@/lib/types';
+import styles from './Dashboard.module.scss';
+import { CreateDeviceButton } from '../createDeviceButton/CreateDeviceButton';
+import { Loader } from '../loader/Loader';
+import { usePathname } from 'next/navigation';
 
 export function Dashboard() {
 
-    const [entries, setEntries] = useState<Entry[]>([])
+    const [devices, setDevices] = useState<Device[]|null>(null);
+    const pathname = usePathname();
 
-    // TODO: fetch the latest sensor entries from the database
+    // Fetch the devices and latest record entries (if exists) from the database
     useEffect(() => {
-        setEntries([{
-            deviceId: 'yBN5qHIvD4',
-            entryNum: 1,
-            name: 'Temperature',
-            value: 18,
-            unit: '°C',
-        }, {
-            deviceId: '4H07eBrKEy',
-            entryNum: 1,
-            name: 'Humidity',
-            value: 35,
-            unit: '%',
-        }, {
-            deviceId: 'T2SRXSm7d3',
-            entryNum: 1,
-            name: 'Light',
-            value: 'On',
-            unit: '',
-        }, {
-            deviceId: 'G46PXDF2nd',
-            entryNum: 0,
-            name: 'Empty',
-            value: null,
-            unit: '%'
-        }])
-    }, [])
+
+        fetch(pathname + 'api', { cache: 'no-cache', method: 'GET' })
+            .then(response => response.json())
+            .then(body => {
+
+                const { data } = body;
+                if (data === undefined || !Array.isArray(data)) {
+                    console.error('Received a non-array');
+                    return;
+                }
+
+                setDevices(data);
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+    }, []);
+
+    if (!devices) {
+        return (
+            <div className={styles.dashboard}>
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className={styles.dashboard}>
             {
-                entries.map((data, i) => <DashboardCell key={data.deviceId} data={data} remove={() => {setEntries(entries.filter((_, index) => (index != i)))}} />)
+                devices.map((device, i) =>
+                    <DashboardCell
+                        key={device.id}
+                        device={device}
+                        remove={() => {
+                            setDevices(devices.filter((_, index) => (index != i)));
+                        }}
+                    />
+                )
             }
-            <CreateSensorButton
-                addNewSensor={(newEntry: Entry) => {
-                    setEntries([...entries, newEntry])
+            <CreateDeviceButton
+                addNewDevice={(newDevice: Device) => {
+                    setDevices([...devices, newDevice]);
                 }}
             />
         </div>
@@ -61,28 +66,45 @@ export function Dashboard() {
 }
 
 function DashboardCell({
-    data,
+    device,
     remove,
 }: {
-    data: Entry,
+    device: Device,
     remove: () => void,
 }) {
+    const pathname = usePathname();
+
     return (
         <Link
             className={styles.cell}
             href={{
-                pathname: 'sensor',
-                query: { deviceId: data.deviceId }
+                pathname: 'device',
+                query: { deviceId: device.id }
             }}
         >
             <div
                 className={styles.remove}
                 onClick={(e) => {
                     e.stopPropagation();
-                    if (window.confirm(`Remove ${data.name} sensor?`)) {
-                        // TODO: Delete the sensor from database
+                    if (window.confirm(`Remove ${device.name} device?`)) {
 
-                        remove(); // Remove it from the UI
+                        // Delete the device and all its records from database
+                        fetch(pathname + 'api', {
+                            method: 'DELETE',
+                            headers: { 'Content-type': 'application/json' },
+                            body: JSON.stringify({ deviceId: device.id })
+                        })
+                            .then((response) => {
+                                if (response.status != 200) {
+                                    alert('Failed to remove device');
+                                    return;
+                                }
+                                remove(); // Remove it from the UI
+                            })
+                            .catch((error) => {
+                                alert('Could not add new device');
+                                console.error(error);
+                            });
                     }
                 }}
             >
@@ -91,21 +113,20 @@ function DashboardCell({
                 </svg>
             </div>
             <div className={styles.name}>
-                {data.name}
+                {device.name}
             </div>
             <div className={styles.valueField}>
                 <div className={styles.value}>
                     {
-                        data.value == null ?
-                        "-"
-                        :
-                        data.value
+                        device.records.length == 0 ?
+                        "-" :
+                        device.records[0].value
                     }
                 </div>
                 {
-                    data.unit != '' && 
+                    device.unit != '' && 
                     <div className={styles.unit}>
-                        {data.unit}
+                        {device.unit}
                     </div>
                 }
             </div>

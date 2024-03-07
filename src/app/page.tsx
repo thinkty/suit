@@ -2,7 +2,7 @@
 import { Dashboard } from '@/components/dashboard/Dashboard'
 import styles from './page.module.scss'
 
-export default function Home() {
+export default function HomePage() {
     return (
         <div className={styles.main}>
             <div className={styles.head}>

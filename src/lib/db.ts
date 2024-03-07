@@ -23,6 +23,7 @@ export const Device = sequelize.define('Device', {
     unit: { type: DataTypes.STRING, allowNull: true },
 },{
     tableName: 'devices',
+    timestamps: false,
 });
 
 export const Record = sequelize.define('Record', {
@@ -36,6 +37,9 @@ export const Record = sequelize.define('Record', {
     updatedAt: true,
 });
 
+Device.hasMany(Record, { foreignKey: 'did', as: 'records' });
+Record.belongsTo(Device);
+
 (async () => {
     await sequelize.authenticate();
     console.log("Successful authentication");
@@ -43,12 +47,19 @@ export const Record = sequelize.define('Record', {
     console.log("Successful synchronization");
 })();
 
+export async function checkDevice(did: number) {
+    try {
+        return await Device.findOne({ where: { id: did } });
+    } catch (error) {
+        return null;
+    }
+}
+
 export async function createDevice(name: string, valueType: string, unit: string | null) {
 
     try {
         const newDevice = await Device.create({ name, valueType, unit });
         console.log(newDevice.toJSON())
-
         return newDevice;
 
     } catch (error) {
@@ -57,16 +68,71 @@ export async function createDevice(name: string, valueType: string, unit: string
     }
 }
 
-export async function getAllDevices(): Promise<null|number> {
+export async function createRecord(did: number, value: string) {
 
     try {
-
-        
-        // TODO:
-        return 7
-
+        const newRecord = await Record.create({ did, value });
+        console.log(newRecord.toJSON());
+        return newRecord;
+    
     } catch (error) {
-        console.error(error)
-        return null
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getDeviceAndAllRecords(did: number) {
+
+    try {
+        const device = await Device.findOne({
+            where: {
+                id: did,
+            },
+            include: [{
+                model: Record,
+                order: [['createdAt', 'DESC']],
+                as: 'records',
+            }],
+        });
+        return device;
+        
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getAllDevicesAndMostRecentRecord() {
+
+    try {
+        const devices = await Device.findAll({
+            include: [{
+                model: Record,
+                order: [['createdAt', 'DESC']],
+                limit: 1,
+                as: 'records',
+            }],
+        });
+        return devices;
+        
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function deleteDeviceAndRecords(did: number) {
+
+    try {
+        await Device.destroy({
+            where: {
+                id: did,
+            }
+        });
+        return 0;
+        
+    } catch (error) {
+        console.error(error);
+        return null;
     }
 }

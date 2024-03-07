@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Entry } from '../dashboard/Dashboard';
-import styles from './CreateSensorButton.module.scss';
+import { Device } from '@/lib/types';
+import styles from './CreateDeviceButton.module.scss';
 import { usePathname } from 'next/navigation';
 
-export function CreateSensorButton({
-    addNewSensor
+export function CreateDeviceButton({
+    addNewDevice
 } : {
-    addNewSensor: (newEntry: Entry) => void
+    addNewDevice: (newDevice: Device) => void
 }) {
 
     const pathname = usePathname();
@@ -53,11 +53,11 @@ export function CreateSensorButton({
                             </svg>
                         </div>
                         <div className={styles.head}>
-                            New Sensor
+                            New Device
                         </div>
                         <div className={styles.form}>
                             <label>
-                                Sensor Name :
+                                Name
                                 <input
                                     className={styles.textInput}
                                     value={name}
@@ -65,7 +65,7 @@ export function CreateSensorButton({
                                 />
                             </label>
                             <label>
-                                Value Type :
+                                Value Type
                                 <input
                                     type="radio"
                                     value="number"
@@ -82,7 +82,7 @@ export function CreateSensorButton({
                                 string
                             </label>
                             <label>
-                                Value Unit :
+                                Value Unit
                                 <input
                                     className={styles.textInput}
                                     value={unit}
@@ -103,10 +103,10 @@ export function CreateSensorButton({
                             <div
                                 className={styles.button}
                                 onClick={(e) => {
-                                    e.stopPropagation()
+                                    e.stopPropagation();
 
                                     if (name == '') {
-                                        window.alert('Name cannot be empty!')
+                                        window.alert('Name cannot be empty!');
                                         return
                                     }
 
@@ -116,22 +116,14 @@ export function CreateSensorButton({
                                         body: JSON.stringify({ name, valueType, unit })
                                     })
                                         .then((response) => response.json())
-                                        .then((data) => {
-                                            console.log(data);
-                                            
-                                            // TODO:
-                                            addNewSensor({
-                                                deviceId: data.id,
-                                                entryNum: 0, // TODO:
-                                                name: data.name,
-                                                value: 0, // TODO:
-                                                unit: data.unit,
-                                            })
+                                        .then((device) => {
+                                            console.log(device);
+                                            addNewDevice(device);
 
-                                            setName('')
-                                            setValueType('number')
-                                            setUnit('')
-                                            setModal(false)
+                                            setName('');
+                                            setValueType('number');
+                                            setUnit('');
+                                            setModal(false);
                                         })
                                         .catch((error) => {
                                             alert('Could not add new device');

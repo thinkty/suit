@@ -6,6 +6,9 @@
   --foreground-secondary: #747474;
   --accent: #c8e1cc;
 
+  --background-type-number: #ADD8E6;
+  --background-type-string: #90ee90;
+
   --dashboard-cell-size: 150px;
   --dashboard-cell-background: #ffffff;
   --dashboard-cell-border-color: #c3c3c3;
@@ -56,4 +59,22 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+input {
+  width: 100%;
+  height: 36px;
+  border-radius: 4px;
+  padding-left: 12px;
+  font-size: 14px;
+  font-weight: normal;
+  border: 1px solid rgb(137, 151, 155);
+  transition: border-color 150ms ease-in-out 0s;
+  outline: none;
+  color: rgb(33, 49, 60);
+  background-color: rgb(255, 255, 255);
+  padding-right: 12px;
+  :hover{
+      box-shadow: rgb(231 238 236) 0px 0px 0px 3px;
+  }
 }
