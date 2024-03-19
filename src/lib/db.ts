@@ -14,16 +14,22 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
     port: dbConfig.port,
     dialect: 'mariadb',
     dialectModule: require('mariadb'), 
+    define: {
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_general_ci'
+    }
 });
 
 export const Device = sequelize.define('Device', {
     id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, allowNull: false },
     valueType: { type: DataTypes.STRING, allowNull: false },
-    unit: { type: DataTypes.STRING, allowNull: true },
+    unit: { type: DataTypes.STRING, allowNull: false, defaultValue: "" },
 },{
     tableName: 'devices',
     timestamps: false,
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_general_ci',
 });
 
 export const Record = sequelize.define('Record', {
@@ -35,6 +41,8 @@ export const Record = sequelize.define('Record', {
     timestamps: true,
     createdAt: true,
     updatedAt: true,
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_general_ci',
 });
 
 Device.hasMany(Record, { foreignKey: 'did', as: 'records' });
