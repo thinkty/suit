@@ -6,36 +6,11 @@
   --foreground-secondary: #747474;
   --accent: #c8e1cc;
 
-  --background-type-number: #ADD8E6;
-  --background-type-string: #90ee90;
-
-  --dashboard-cell-size: 150px;
-  --dashboard-cell-background: #ffffff;
-  --dashboard-cell-border-color: #c3c3c3;
+  /* Values shared in multiple places inside one or more components */
+  --dashboard-cell-size: 10rem; 
+  --dashboard-cell-background: #fff;
   --dashboard-cell-border-radius: 5px;
-
-  --dashboard-cell-remove-background-hover: #dedede;
-
-  --dashboard-create-modal-background: #ffffff;
-  --dashboard-create-modal-border-radius: 5px;
-  --dashboard-create-modal-close-background-hover: #dedede;
-  --dashboard-create-modal-action-border-radius: 10px;
-
-  --backbutton-size: 45px;
-  --backbutton-padding: 8px;
-  --backbutton-background: #ffffff;
-  --backbutton-border-color: #c3c3c3;
-  --backbutton-border-radius: 50px;
-
-  --loader-border-color: #c3c3c3;
-
-  --graph-width: 90vw;
-  --graph-max-width: 1000px;
-  --graph-height: 50vh;
-  --graph-background: #ffffff;
-  --graph-border-color: #c3c3c3;
-  --graph-border-radius: 5px;
-
+  --common-border-color: #c3c3c3;
 }
 
 * {

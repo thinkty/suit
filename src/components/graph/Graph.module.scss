@@ -1,11 +1,11 @@
 
 .graph {
-    width: var(--graph-width);
-    max-width: var(--graph-max-width);
-    height: var(--graph-height);
-    background-color: var(--graph-background);
-    border: thin solid var(--graph-border-color);
-    border-radius: var(--graph-border-radius);
+    width: 90vw;
+    max-width: 1000px;
+    height: 50vh;
+    background-color: #fff;
+    border: thin solid var(--common-border-color);
+    border-radius: 5px;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
     padding: 1rem;
 
@@ -39,13 +39,13 @@
         .numberType {
             padding: 0.2rem 0.5rem;
             border-radius: 1rem;
-            background-color: var(--background-type-number);
+            background-color: #ADD8E6;
         }
     
         .stringType {
             padding: 0.2rem 0.5rem;
             border-radius: 1rem;
-            background-color: var(--background-type-string);
+            background-color: #90ee90;
         }
     }
 

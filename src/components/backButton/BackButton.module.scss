@@ -1,14 +1,14 @@
 .backButton {
-    width: var(--backbutton-size);
-    height: var(--backbutton-size);
-    padding: var(--backbutton-padding);
+    width: 3rem;
+    height: 3rem;
+    padding: 0.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
 
-    background-color: var(--backbutton-background);
-    border: solid thin var(--backbutton-border-color);
-    border-radius: var(--backbutton-border-radius);
+    background-color: #fff;
+    border: solid thin var(--common-border-color);
+    border-radius: 50px;
     cursor: pointer;
 
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
