@@ -76,6 +76,29 @@ export async function createDevice(name: string, valueType: string, unit: string
     }
 }
 
+export async function updateDevice(did: number, name: string, valueType: string, unit: string | null) {
+
+    try {
+        const device = await Device.findOne({ where: { id: did } });
+        if (!device) {
+            return null;
+        }
+
+        device.set({
+            name,
+            valueType,
+            unit,
+        });
+        const updatedDevice = await device.save();
+        console.log(updatedDevice.toJSON())
+        return updatedDevice;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 export async function createRecord(did: number, value: string) {
 
     try {
