@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { ResponsiveContainer, XAxis, YAxis, Tooltip, Line, LineChart, TooltipProps } from 'recharts';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { Device, DeviceRecord } from '@/lib/types';
-import styles from './Graph.module.scss';
 import { Loader } from '../loader/Loader';
+import styles from './Graph.module.scss';
 
 export function Graph({
     deviceId,
@@ -27,7 +29,7 @@ export function Graph({
                     console.error('Received trash');
                     return;
                 }
-    
+
                 console.log(data);
                 setDevice(data);
             })
@@ -67,18 +69,113 @@ export function Graph({
                     </div>
                 }
             </div>
-
             <div className={styles.diagram}>
-                actual diagram
+                <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                        data={
+                            device.records.sort((a, b) => a.entry - b.entry)
+                                .map((record, i) => ({
+                                    value: device.valueType === "number" ? parseInt(record.value) : record.value,
+                                    date: record.createdAt,
+                                    unit: device.unit,
+                                    index: i,
+                                }))
+                        }
+                        margin={{ left: 10, right: 50 }}
+                    >
+                        <XAxis
+                            dataKey="index"
+                            padding={{ left: 20, right: 20 }}
+                        />
+                        <YAxis
+                            type={device.valueType === "number" ? "number" : "category"}
+                            padding={{top: device.valueType === "number" ? 10 : 40, bottom: device.valueType === "number" ? 10 : 40}}
+                        />
+                        <Tooltip
+                            content={<CustomTooltip />}
+                            isAnimationActive={false}
+                        />
+                        <Line
+                            type={device.valueType === "number" ? "monotone" : "stepAfter"}
+                            dataKey="value"
+                            stroke={device.valueType === "number" ? "#ADD8E6" : "#90ee90"}
+                            strokeWidth={3}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
             </div>
-
             <AddNewRecordForm
                 deviceId={deviceId}
                 addNewRecord={(newRecord) => {
-                    // TODO: show UI change
-                    console.log(newRecord);
+                    setDevice({
+                        ...device,
+                        records: [...device.records, newRecord],
+                    });
                 }}
             />
+            <RecordList
+                unit={device.unit}
+                records={device.records}
+            />
+        </div>
+    );
+}
+
+function RecordList({
+    unit,
+    records,
+}: {
+    unit: string,
+    records: DeviceRecord[]
+}) {
+    if (records.length == 0) {
+        return (
+            <div className={styles.emptyRecordList}>
+                No records...
+            </div>
+        );
+    }
+
+    return (
+        <div className={styles.recordList}>
+            <div className={styles.headers}>
+                <div className={styles.header}>Date</div>
+                <div className={styles.header}>Value</div>
+            </div>
+            <div className={styles.items}>
+                {
+                    records
+                        .sort((a, b) => a.entry - b.entry)
+                        .reverse()
+                        .map((record) => (
+                            <div 
+                                key={`recordList${record.entry}`}
+                                className={styles.item}
+                            >
+                                <div className={styles.field}>{new Date(record.createdAt).toLocaleString()}</div>
+                                <div className={styles.field}>{`${record.value} ${unit}`}</div>
+                            </div>
+                        ))
+                }
+            </div>
+        </div>
+    );
+}
+
+function CustomTooltip({
+    active,
+    payload,
+    label,
+}: TooltipProps<ValueType, NameType>) {
+
+    if (!active || !payload || payload.length == 0) {
+        return null;
+    }
+
+    return (
+        <div className={styles.customTooltip}>
+            <p className={styles.tooltipDate}>{new Date(payload[0].payload.date).toLocaleString()}</p>
+            <p className={styles.tooltipValue}>{`${payload[0].value} ${payload[0].payload.unit}`}</p>
         </div>
     );
 }

@@ -2,7 +2,7 @@
 .graph {
     width: 90vw;
     max-width: 1000px;
-    height: 50vh;
+    height: 60vh;
     background-color: #fff;
     border: thin solid var(--common-border-color);
     border-radius: 5px;
@@ -52,7 +52,6 @@
     .diagram {
         flex: 1;
         width: 100%;
-        background-color: grey;
     }
 
     .addForm {
@@ -77,5 +76,73 @@
                 opacity: 0.5;
             }
         }
+    }
+
+    .emptyRecordList {
+        height: 150px;
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .recordList {
+        height: 150px;
+        width: 80%;
+        border: solid thin #c3c3c3;
+        display: flex;
+        flex-direction: column;
+        border-collapse: collapse;
+        
+        .headers {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            
+            .header {
+                flex: 1;
+                border: thin solid #c3c3c3;
+                padding: 0.3rem;
+            }
+        }
+
+        .items {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+
+            .item {
+                display: flex;
+                flex-direction: row;
+
+                .field {
+                    flex: 1;
+                    border: thin solid #c3c3c3;
+                    padding: 0.3rem;
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
+
+.customTooltip {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    border-radius: 5px;
+
+    .tooltipDate {
+        color: var(--foreground-secondary);
+    }
+
+    .tooltipValue {
+        font-weight: bold;
     }
 }

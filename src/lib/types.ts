@@ -2,8 +2,8 @@
 export type DeviceRecord = {
     did: string;
     entry: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     value: string;
 };
 
