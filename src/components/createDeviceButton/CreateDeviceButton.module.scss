@@ -22,8 +22,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: 10px;
-    margin: 10px 0;
+    gap: 1rem;
+    margin: 1rem 0;
 
     label {
         width: 100%;
@@ -31,7 +31,7 @@
         flex-direction: row;
         justify-content: flex-start;
         align-items: center;
-        gap: 10px;
+        gap: 1rem;
         white-space: nowrap;
 
         input.textInput {

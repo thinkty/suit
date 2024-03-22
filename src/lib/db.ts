@@ -1,5 +1,5 @@
 import getConfig from 'next/config';
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { DataTypes, Model, QueryTypes, Sequelize } from 'sequelize';
 
 const { serverRuntimeConfig } = getConfig();
 const { dbConfig } = serverRuntimeConfig;
@@ -36,17 +36,16 @@ export const Record = sequelize.define('Record', {
     entry: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
     did: { type: DataTypes.INTEGER, allowNull: false },
     value: { type: DataTypes.STRING, allowNull: true },
+    created: { type: DataTypes.DATE, allowNull: false },
 }, {
     tableName: 'records',
-    timestamps: true,
-    createdAt: true,
-    updatedAt: true,
+    timestamps: false,
     charset: 'utf8mb4',
     collate: 'utf8mb4_general_ci',
 });
 
 Device.hasMany(Record, { foreignKey: 'did', as: 'records' });
-Record.belongsTo(Device);
+Record.belongsTo(Device, { foreignKey: 'did' });
 
 (async () => {
     await sequelize.authenticate();
@@ -102,7 +101,7 @@ export async function updateDevice(did: number, name: string, valueType: string,
 export async function createRecord(did: number, value: string) {
 
     try {
-        const newRecord = await Record.create({ did, value });
+        const newRecord = await Record.create({ did, value, created: new Date().toISOString() });
         console.log(newRecord.toJSON());
         return newRecord;
     
@@ -121,12 +120,101 @@ export async function getDeviceAndAllRecords(did: number) {
             },
             include: [{
                 model: Record,
-                order: [['createdAt', 'DESC']],
+                order: [['created', 'DESC']],
                 as: 'records',
             }],
         });
         return device;
         
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getDeviceAndFilteredRecords(did: number, startDate: Date, endDate: Date) {
+    
+    try {
+
+        // Prepared query for the project requirement
+        const filteredRecords = await sequelize.query(
+            "SELECT * FROM records WHERE did = :did AND created >= :startDate AND created <= :endDate",
+            {
+                model: Record,
+                mapToModel: true,
+                replacements: {
+                    did,
+                    startDate: `${startDate.toISOString().substring(0,10)} 00:00:00`,
+                    endDate: `${endDate.toISOString().substring(0,10)} 23:59:59`,
+                },
+                type: QueryTypes.SELECT,
+            }
+        ); 
+
+        return filteredRecords;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getDeviceStatistics(did: number, type: string, startDate?: Date, endDate?: Date) {
+    
+    try {
+
+        // For statistics for number device, return MAX, MIN, AVG
+        if (type == "number") {
+
+            if (startDate && endDate) {
+                return await sequelize.query(
+                    "SELECT MAX(value) AS max, MIN(value) AS min, AVG(value) AS avg FROM records WHERE did = :did AND created >= :startDate AND created <= endDate",
+                    {
+                        replacements: {
+                            did,
+                            startDate: `${startDate.toISOString().substring(0,10)} 00:00:00`,
+                            endDate: `${endDate.toISOString().substring(0,10)} 23:59:59`,
+                        },
+                        type: QueryTypes.SELECT,
+                    }
+                )
+            }
+
+            return await sequelize.query(
+                "SELECT MAX(value) AS max, MIN(value) AS min, AVG(value) AS avg FROM records WHERE did = :did",
+                {
+                    replacements: { did },
+                    type: QueryTypes.SELECT,
+                }
+            )
+
+        } else if (type == "string") {
+            // For statistics for string device, return COUNT for each value and order by the count
+            if (startDate && endDate) {
+                return await sequelize.query(
+                    "SELECT value, COUNT(*) AS cnt FROM records WHERE did = :did AND created >= :startDate AND created <= endDate GROUP BY value ORDER BY cnt DESC",
+                    {
+                        replacements: {
+                            did,
+                            startDate: `${startDate.toISOString().substring(0,10)} 00:00:00`,
+                            endDate: `${endDate.toISOString().substring(0,10)} 23:59:59`,
+                        },
+                        type: QueryTypes.SELECT,
+                    }
+                )
+            }
+
+            return await sequelize.query(
+                "SELECT value, COUNT(*) AS cnt FROM records WHERE did = :did GROUP BY value ORDER BY cnt DESC",
+                {
+                    replacements: { did },
+                    type: QueryTypes.SELECT,
+                }
+            )
+        }
+
+        return null;
+
     } catch (error) {
         console.error(error);
         return null;
@@ -139,7 +227,7 @@ export async function getAllDevicesAndMostRecentRecord() {
         const devices = await Device.findAll({
             include: [{
                 model: Record,
-                order: [['createdAt', 'DESC']],
+                order: [['created', 'DESC']],
                 limit: 1,
                 as: 'records',
             }],

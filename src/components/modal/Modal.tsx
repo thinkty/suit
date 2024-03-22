@@ -8,6 +8,7 @@ export function Modal({
     title,
     actionTexts,
     actionCallbacks,
+    hideDefaultCancel,
     children,
 } : {
     show: boolean,
@@ -15,6 +16,7 @@ export function Modal({
     title: string,
     actionTexts?: string[],
     actionCallbacks?: VoidFunction[],
+    hideDefaultCancel?: boolean,
     children: string | JSX.Element | JSX.Element[],
 }) {
     return (
@@ -45,12 +47,15 @@ export function Modal({
                 {children}
 
                 <div className={styles.action}>
-                    <div
-                        className={styles.button}
-                        onClick={close}
-                    >
-                        Cancel
-                    </div>
+                    {
+                        !hideDefaultCancel &&
+                        <div
+                            className={styles.button}
+                            onClick={close}
+                        >
+                            Cancel
+                        </div>
+                    }
                     {
                         actionTexts &&
                         actionCallbacks && 
