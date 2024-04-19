@@ -209,7 +209,7 @@ export async function getDeviceStatistics(did: number, type: string, startDate?:
 
                     if (startDate && endDate) {
                         return await sequelize.query(
-                            "SELECT MAX(value) AS max, MIN(value) AS min, AVG(value) AS avg FROM records WHERE did = :did AND created >= :startDate AND created <= endDate",
+                            "SELECT MAX(value) AS max, MIN(value) AS min, AVG(value) AS avg FROM records WHERE did = :did AND created >= :startDate AND created <= :endDate",
                             {
                                 replacements: {
                                     did,
@@ -233,7 +233,7 @@ export async function getDeviceStatistics(did: number, type: string, startDate?:
                     // For statistics for string device, return COUNT for each value and order by the count
                     if (startDate && endDate) {
                         return await sequelize.query(
-                            "SELECT value, COUNT(*) AS cnt FROM records WHERE did = :did AND created >= :startDate AND created <= endDate GROUP BY value ORDER BY cnt DESC",
+                            "SELECT value, COUNT(*) AS cnt FROM records WHERE did = :did AND created >= :startDate AND created <= :endDate GROUP BY value ORDER BY cnt DESC",
                             {
                                 replacements: {
                                     did,
