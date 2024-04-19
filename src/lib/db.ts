@@ -30,6 +30,11 @@ export const Device = sequelize.define('Device', {
     timestamps: false,
     charset: 'utf8mb4',
     collate: 'utf8mb4_general_ci',
+    indexes: [
+        {
+            fields: ["id"],
+        }
+    ]
 });
 
 export const Record = sequelize.define('Record', {
